@@ -1,0 +1,49 @@
+@import "tailwindcss";
+
+@theme {
+  --color-dark-900: #0b090f; /* Sidebar/deepest bg */
+  --color-dark-800: #120e18; /* Card bg */
+  --color-dark-700: #1c1825; /* Main bg */
+  --color-brand-primary: #f2a8c6; /* Innoby pink */
+  --color-brand-secondary: #fcb8d1; /* Innoby light pink */
+}
+
+@layer base {
+  :root {
+    background-color: var(--color-dark-700);
+    color: #e2e8f0;
+  }
+  
+  body {
+    @apply m-0 p-0 font-sans antialiased text-slate-300 bg-[#1c1825];
+  }
+}
+
+/* Custom animations for Terminal */
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.animate-blink {
+  animation: blink 1s step-end infinite;
+}
+
+/* Scrollbar styling for dark mode */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-dark-900); 
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-dark-700); 
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #334155; 
+}
