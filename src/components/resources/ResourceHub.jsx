@@ -27,7 +27,7 @@ export default function ResourceHub() {
       {/* Floating trigger button */}
       <button
         onClick={handleOpen}
-        className="fixed bottom-6 right-6 z-40 group flex items-center gap-2.5 bg-dark-900 border border-white/[0.08] hover:border-brand-primary/40 px-4 py-2.5 rounded-2xl shadow-xl shadow-black/40 text-gray-500 hover:text-white transition-all duration-200"
+        className="fixed bottom-24 right-6 z-40 group flex items-center gap-2.5 bg-dark-900 border border-white/[0.08] hover:border-brand-primary/40 px-4 py-2.5 rounded-2xl shadow-xl shadow-black/40 text-gray-500 hover:text-white transition-all duration-200"
       >
         <BookOpen size={15} className="group-hover:text-brand-primary transition-colors shrink-0" />
         <span className="text-xs font-semibold font-display tracking-wide">Reference</span>
