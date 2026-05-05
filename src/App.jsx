@@ -9,6 +9,12 @@ import InteractiveQuiz from './components/quiz/InteractiveQuiz';
 import ResourceHub from './components/resources/ResourceHub';
 import { slidesData } from './data/slidesData';
 
+const LEVEL_COLORS = [
+  { badge: 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' },
+  { badge: 'bg-amber-500/10 text-amber-400 border border-amber-500/20' },
+  { badge: 'bg-violet-500/10 text-violet-400 border border-violet-500/20' },
+];
+
 function App() {
   const [currentLevelIndex, setCurrentLevelIndex] = useState(0);
   const [currentLessonIndex, setCurrentLessonIndex] = useState(0);
@@ -17,13 +23,12 @@ function App() {
 
   const currentLevel = slidesData[currentLevelIndex];
   const currentLesson = currentLevel?.lessons[currentLessonIndex];
-  
+
   const isLastLessonInLevel = currentLessonIndex === currentLevel?.lessons.length - 1;
   const isLastLevel = currentLevelIndex === slidesData.length - 1;
 
   const handleNext = () => {
     if (showQuiz) return;
-    
     if (isLastLessonInLevel) {
       setShowQuiz(true);
     } else {
@@ -50,7 +55,6 @@ function App() {
       setCurrentLevelIndex(nextLevel);
       setCurrentLessonIndex(0);
     } else {
-      // Finished everything
       alert("Congratulations! You've completed the Zero to Hero guide.");
     }
     setShowQuiz(false);
@@ -64,92 +68,112 @@ function App() {
 
   if (!currentLevel || !currentLesson) return null;
 
+  const isPrevDisabled = currentLevelIndex === 0 && currentLessonIndex === 0 && !showQuiz;
+  const levelStyle = LEVEL_COLORS[currentLevelIndex] ?? LEVEL_COLORS[2];
+
   return (
-    <div className="flex h-screen bg-dark-700 text-gray-200 overflow-hidden selection:bg-brand-primary/30 selection:text-white">
-      <Sidebar 
+    <div className="flex h-screen bg-dark-700 text-gray-200 overflow-hidden selection:bg-brand-primary/20 selection:text-white">
+      <Sidebar
         currentLevelIndex={currentLevelIndex}
         currentLessonIndex={currentLessonIndex}
         unlockedLevels={unlockedLevels}
         onNavigate={handleNavigate}
       />
-      
-      <main className="flex-1 flex flex-col relative overflow-y-auto">
-        {/* Main Content Area */}
-        <div className="flex-1 px-8 py-12 md:px-16 max-w-5xl mx-auto w-full flex flex-col justify-center">
-          <AnimatePresence mode="wait">
-            {!showQuiz ? (
-              <motion.div
-                key={`${currentLevelIndex}-${currentLessonIndex}`}
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                transition={{ duration: 0.3 }}
-                className="w-full"
-              >
-                <div className="mb-8">
-                  <div className="inline-flex items-center space-x-2 bg-dark-800 text-gray-300 px-3 py-1 rounded-full text-xs font-medium mb-4 border border-gray-800">
-                    <span className="text-brand-secondary">{currentLevel.level}</span>
-                    <span className="text-gray-600">/</span>
-                    <span>Lesson {currentLessonIndex + 1}</span>
+
+      <main className="flex-1 flex flex-col relative overflow-hidden">
+        {/* Dot grid background */}
+        <div className="absolute inset-0 dot-grid pointer-events-none" />
+
+        {/* Scrollable content */}
+        <div className="relative flex-1 overflow-y-auto">
+          <div className="px-10 py-12 md:px-16 max-w-4xl mx-auto w-full">
+            <AnimatePresence mode="wait">
+              {!showQuiz ? (
+                <motion.div
+                  key={`${currentLevelIndex}-${currentLessonIndex}`}
+                  initial={{ opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -16 }}
+                  transition={{ duration: 0.28, ease: [0.4, 0, 0.2, 1] }}
+                  className="w-full"
+                >
+                  {/* Breadcrumb */}
+                  <div className="flex items-center gap-2.5 mb-7">
+                    <span className={`text-[10px] font-bold uppercase tracking-[0.14em] px-2.5 py-1 rounded-full ${levelStyle.badge}`}>
+                      {currentLevel.level}
+                    </span>
+                    <span className="text-gray-700">·</span>
+                    <span className="text-gray-600 text-xs font-mono">
+                      {currentLessonIndex + 1} / {currentLevel.lessons.length}
+                    </span>
                   </div>
-                  <h2 className="text-3xl md:text-4xl font-bold text-white tracking-tight mb-4">
+
+                  {/* Lesson heading */}
+                  <h2 className="font-display text-4xl md:text-5xl font-bold text-white tracking-tight leading-[1.08] mb-5">
                     {currentLesson.title}
                   </h2>
-                  <p className="text-lg text-gray-400 leading-relaxed max-w-3xl">
+
+                  {/* Divider */}
+                  <div className="flex items-center gap-4 mb-6">
+                    <div className="h-px bg-gradient-to-r from-brand-primary/20 via-brand-primary/10 to-transparent flex-1" />
+                  </div>
+
+                  {/* Description */}
+                  <p className="text-[15px] text-gray-400 leading-relaxed max-w-2xl mb-10">
                     {currentLesson.content}
                   </p>
-                </div>
 
-                <div className="mt-8">
+                  {/* Demo area */}
                   {currentLesson.demoType === 'terminal' && (
                     <TerminalSimulation sequence={currentLesson.terminalSequence} />
                   )}
                   {currentLesson.demoType === 'liveCode' && (
                     <LiveCodeDemo data={currentLesson.liveCode} />
                   )}
-                </div>
-              </motion.div>
-            ) : (
-              <motion.div
-                key={`quiz-${currentLevelIndex}`}
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                transition={{ duration: 0.3 }}
-                className="w-full py-10"
-              >
-                <InteractiveQuiz 
-                  quiz={currentLevel.quiz} 
-                  onComplete={handleQuizComplete} 
-                />
-              </motion.div>
-            )}
-          </AnimatePresence>
+                </motion.div>
+              ) : (
+                <motion.div
+                  key={`quiz-${currentLevelIndex}`}
+                  initial={{ opacity: 0, scale: 0.97 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.97 }}
+                  transition={{ duration: 0.28, ease: [0.4, 0, 0.2, 1] }}
+                  className="w-full py-8"
+                >
+                  <InteractiveQuiz
+                    quiz={currentLevel.quiz}
+                    onComplete={handleQuizComplete}
+                    levelIndex={currentLevelIndex}
+                  />
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
         </div>
 
-        {/* Navigation Footer */}
-        <div className="bg-dark-900 border-t border-gray-800 p-4 px-8 flex justify-between items-center sticky bottom-0">
+        {/* Navigation footer */}
+        <div className="relative border-t border-white/[0.05] bg-dark-900/80 backdrop-blur-md p-4 px-8 flex justify-between items-center shrink-0">
           <button
             onClick={handlePrevious}
-            disabled={currentLevelIndex === 0 && currentLessonIndex === 0 && !showQuiz}
-            className="flex items-center space-x-2 text-gray-400 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors font-medium px-4 py-2 rounded-lg hover:bg-gray-800"
+            disabled={isPrevDisabled}
+            className="flex items-center gap-2 text-gray-500 hover:text-white disabled:opacity-25 disabled:cursor-not-allowed transition-colors font-medium px-4 py-2 rounded-lg hover:bg-white/[0.05] text-sm"
           >
-            <ChevronLeft size={18} />
+            <ChevronLeft size={16} />
             <span>Previous</span>
           </button>
-          
+
           {!showQuiz && (
             <button
               onClick={handleNext}
-              className="flex items-center space-x-2 bg-white text-black hover:bg-gray-200 font-medium px-6 py-2.5 rounded-lg transition-colors shadow-lg"
+              className="flex items-center gap-2 bg-brand-primary text-dark-900 hover:bg-brand-secondary font-bold px-6 py-2.5 rounded-xl transition-all text-sm shadow-lg shadow-brand-primary/15 hover:shadow-brand-primary/25"
             >
               <span>{isLastLessonInLevel ? 'Take Quiz' : 'Next Lesson'}</span>
-              <ChevronRight size={18} />
+              <ChevronRight size={16} />
             </button>
           )}
         </div>
       </main>
-      
+
       <ResourceHub />
     </div>
   );

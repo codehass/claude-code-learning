@@ -1,11 +1,17 @@
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=IBM+Plex+Mono:ital,wght@0,400;0,500;1,400&display=swap');
 @import "tailwindcss";
 
 @theme {
-  --color-dark-900: #0b090f; /* Sidebar/deepest bg */
-  --color-dark-800: #120e18; /* Card bg */
-  --color-dark-700: #1c1825; /* Main bg */
-  --color-brand-primary: #f2a8c6; /* Innoby pink */
-  --color-brand-secondary: #fcb8d1; /* Innoby light pink */
+  --color-dark-950: #050408;
+  --color-dark-900: #09070f;
+  --color-dark-800: #0f0c1a;
+  --color-dark-700: #161225;
+  --color-dark-600: #1e1930;
+  --color-brand-primary: #f2a8c6;
+  --color-brand-secondary: #fcb8d1;
+
+  --font-display: 'Syne', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, 'Cascadia Code', monospace;
 }
 
 @layer base {
@@ -13,13 +19,27 @@
     background-color: var(--color-dark-700);
     color: #e2e8f0;
   }
-  
+
   body {
-    @apply m-0 p-0 font-sans antialiased text-slate-300 bg-[#1c1825];
+    @apply m-0 p-0 antialiased text-slate-300 bg-dark-700;
+    font-family: 'Syne', ui-sans-serif, system-ui, sans-serif;
+  }
+
+  /* Noise grain overlay */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.028;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+    background-size: 256px 256px;
   }
 }
 
-/* Custom animations for Terminal */
+/* Cursor blink */
 @keyframes blink {
   0%, 100% { opacity: 1; }
   50% { opacity: 0; }
@@ -29,21 +49,27 @@
   animation: blink 1s step-end infinite;
 }
 
-/* Scrollbar styling for dark mode */
+/* Dot grid background utility */
+.dot-grid {
+  background-image: radial-gradient(circle, rgba(255,255,255,0.035) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+
+/* Refined scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 4px;
+  height: 4px;
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--color-dark-900); 
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--color-dark-700); 
-  border-radius: 4px;
+  background: rgba(255,255,255,0.07);
+  border-radius: 99px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #334155; 
+  background: rgba(255,255,255,0.14);
 }

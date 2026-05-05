@@ -2,63 +2,64 @@ import React from 'react';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { motion } from 'framer-motion';
-import { Terminal } from 'lucide-react';
+import { ArrowDown, Sparkles } from 'lucide-react';
 
 export default function LiveCodeDemo({ data }) {
   return (
-    <div className="flex flex-col space-y-4">
-      {/* Before State */}
-      <div className="rounded-xl overflow-hidden border border-gray-700 bg-dark-800">
-        <div className="px-4 py-2 bg-dark-900 border-b border-gray-700 text-xs font-mono text-gray-400">
-          Before (utils.js)
+    <div className="flex flex-col gap-3">
+      {/* Before */}
+      <div className="rounded-xl overflow-hidden border border-white/[0.06]" style={{ background: '#0a0812' }}>
+        <div className="px-4 py-2.5 border-b border-white/[0.06] flex items-center gap-2" style={{ background: '#0d0b18' }}>
+          <div className="w-2 h-2 rounded-full bg-gray-700" />
+          <span className="text-[11px] font-mono text-gray-600 tracking-wider">BEFORE</span>
+          <span className="ml-auto text-[10px] font-mono text-gray-700">utils.js</span>
         </div>
-        <SyntaxHighlighter 
-          language="javascript" 
-          style={vscDarkPlus} 
-          customStyle={{ margin: 0, padding: '1rem', background: 'transparent' }}
+        <SyntaxHighlighter
+          language="javascript"
+          style={vscDarkPlus}
+          customStyle={{ margin: 0, padding: '1rem', background: 'transparent', fontSize: '13px' }}
         >
           {data.before}
         </SyntaxHighlighter>
       </div>
 
-      {/* Claude Command */}
-      <motion.div 
-        initial={{ opacity: 0, y: 10 }}
+      {/* Claude command */}
+      <motion.div
+        initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5 }}
-        className="flex items-start space-x-3 p-4 bg-brand-primary/10 border border-brand-primary/30 rounded-xl"
+        transition={{ delay: 0.4, duration: 0.3 }}
+        className="flex items-center justify-center"
       >
-        <div className="mt-1 bg-brand-primary/20 p-2 rounded-lg text-brand-secondary">
-          <Terminal size={18} />
-        </div>
-        <div>
-          <div className="text-xs font-semibold text-brand-secondary uppercase tracking-wider mb-1">
-            Claude Command
-          </div>
-          <div className="text-gray-200 font-medium">
-            "{data.command}"
-          </div>
+        <div className="flex items-center gap-3 bg-dark-800 border border-brand-primary/20 px-5 py-2.5 rounded-2xl shadow-lg shadow-brand-primary/5">
+          <Sparkles size={14} className="text-brand-primary shrink-0" />
+          <span className="text-sm text-gray-300 font-medium">{data.command}</span>
+          <ArrowDown size={13} className="text-brand-primary/60 shrink-0" />
         </div>
       </motion.div>
 
-      {/* After State */}
-      <motion.div 
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.5 }}
-        className="rounded-xl overflow-hidden border border-green-900/50 bg-dark-800 relative"
+      {/* After */}
+      <motion.div
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 1.2, duration: 0.4 }}
+        className="rounded-xl overflow-hidden border border-emerald-500/15 relative"
+        style={{ background: '#0a0812' }}
       >
-        <div className="px-4 py-2 bg-dark-900 border-b border-gray-700 flex justify-between items-center">
-          <span className="text-xs font-mono text-gray-400">After (utils.js)</span>
-          <span className="text-xs font-medium text-green-400 bg-green-400/10 px-2 py-0.5 rounded">Updated</span>
+        <div className="px-4 py-2.5 border-b border-emerald-500/10 flex items-center gap-2" style={{ background: '#0d0b18' }}>
+          <div className="w-2 h-2 rounded-full bg-emerald-500/60" />
+          <span className="text-[11px] font-mono text-emerald-500/70 tracking-wider">AFTER</span>
+          <span className="ml-auto text-[10px] bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded font-mono font-medium">updated</span>
         </div>
-        <SyntaxHighlighter 
-          language="javascript" 
-          style={vscDarkPlus} 
-          customStyle={{ margin: 0, padding: '1rem', background: 'transparent' }}
+        <SyntaxHighlighter
+          language="javascript"
+          style={vscDarkPlus}
+          customStyle={{ margin: 0, padding: '1rem', background: 'transparent', fontSize: '13px' }}
         >
           {data.after}
         </SyntaxHighlighter>
+        {/* Subtle green glow */}
+        <div className="absolute inset-0 rounded-xl pointer-events-none"
+             style={{ boxShadow: 'inset 0 0 40px rgba(52, 211, 153, 0.03)' }} />
       </motion.div>
     </div>
   );
